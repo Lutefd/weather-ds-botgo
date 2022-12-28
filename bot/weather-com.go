@@ -27,7 +27,8 @@ type WeatherData struct {
 	Name string `json:"name"`
 }
 
-func getCurrentWeather(message string) (*discordgo.MessageSend, error) {
+func GetCurrentWeather(message string) (*discordgo.
+	MessageSend, error) {
 	r, _ := regexp.Compile(`\d{5}`)
 	cep := r.FindString(message)
 
@@ -60,4 +61,35 @@ func getCurrentWeather(message string) (*discordgo.MessageSend, error) {
 		'f', 2, 64)
 	humidity := strconv.Itoa(int(data.Main.Humidity))
 	wind := strconv.FormatFloat(data.Wind.Speed, 'f', 2, 64)
+
+	embed := &discordgo.MessageSend{
+		Embed: &discordgo.MessageEmbed{
+			Type:        discordgo.EmbedTypeRich,
+			Title:       "Clima atual",
+			Description: "Clima atual em " + city,
+			Fields: []*discordgo.MessageEmbedField{
+				{
+					Name:   "Condições",
+					Value:  conditions,
+					Inline: true,
+				},
+				{
+					Name:   "Temperatura",
+					Value:  temp,
+					Inline: true,
+				},
+				{
+					Name:   "Umidade",
+					Value:  humidity,
+					Inline: true,
+				},
+				{
+					Name:   "Vento",
+					Value:  wind + "km/h",
+					Inline: true,
+				},
+			},
+		},
+	}
+	return embed, nil
 }
