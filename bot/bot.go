@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 )
 
 var (
@@ -32,4 +33,20 @@ func Run() {
 
 	signal.Notify(channel, os.Interrupt)
 	<-channel
+}
+
+func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
+
+	if message.Author.ID == discord.State.User.ID {
+		return
+	}
+
+	switch {
+	case strings.Contains(message.Content, "clima"):
+		discord.ChannelMessageSend(message.ChannelID, "Eu posso te ajudar com isso!")
+	case strings.Contains(message.Content, "bot"):
+		discord.ChannelMessageSend(message.ChannelID, "Olá! Eu sou o WeatherDSBot, um bot que te ajuda a saber o clima de qualquer lugar do mundo!")
+
+	}
+
 }
