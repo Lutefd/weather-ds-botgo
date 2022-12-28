@@ -1,8 +1,11 @@
 package bot
 
 import (
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"
+	"os"
+	"os/signal"
 )
 
 var (
@@ -22,4 +25,11 @@ func Run() {
 	discord.Open()
 
 	defer discord.Close()
+
+	fmt.Print("Bot foi iniciado com sucesso")
+
+	channel := make(chan os.Signal, 1)
+
+	signal.Notify(channel, os.Interrupt)
+	<-channel
 }
