@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"regexp"
+	"strconv"
 	"time"
 )
 
@@ -52,4 +53,11 @@ func getCurrentWeather(message string) (*discordgo.MessageSend, error) {
 
 	var data WeatherData
 	json.Unmarshal([]byte(body), &data)
+
+	city := data.Name
+	temp := data.Weather[0].Description
+	conditions := strconv.FormatFloat(data.Main.Temp,
+		'f', 2, 64)
+	humidity := strconv.Itoa(int(data.Main.Humidity))
+	wind := strconv.FormatFloat(data.Wind.Speed, 'f', 2, 64)
 }
