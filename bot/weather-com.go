@@ -29,23 +29,28 @@ type WeatherData struct {
 
 func GetCurrentWeather(message string) (*discordgo.
 	MessageSend, error) {
-	r, _ := regexp.Compile(`\d{5}`)
+	r, _ := regexp.Compile(`\S{3,50}`)
 	cep := r.FindString(message)
 
 	if cep == "" {
+
 		return &discordgo.MessageSend{
 			Content: "Não foi possível encontrar a cidade",
 		}, nil
 	}
 
-	weatherURL := fmt.Sprintf("%scep=%s&units=metric&appid=%s", URL, cep, OpenWeatherToken)
+	weatherURL := fmt.Sprintf(
+		"%sq=%s&units=metric&appid=%s", URL, cep,
+		OpenWeatherToken)
+
+	fmt.Println(weatherURL)
 
 	client := &http.Client{Timeout: 5 * time.Second}
 
 	resp, err := client.Get(weatherURL)
 	if err != nil {
 		return &discordgo.MessageSend{
-			Content: "Desculpe, ocorreu um erro ao buscar o clima",
+			Content: "Não foi possível estabelecer uma conexão com o servidor",
 		}, nil
 	}
 
@@ -56,8 +61,8 @@ func GetCurrentWeather(message string) (*discordgo.
 	json.Unmarshal([]byte(body), &data)
 
 	city := data.Name
-	temp := data.Weather[0].Description
-	conditions := strconv.FormatFloat(data.Main.Temp,
+	conditions := data.Weather[0].Description
+	temp := strconv.FormatFloat(data.Main.Temp,
 		'f', 2, 64)
 	humidity := strconv.Itoa(int(data.Main.Humidity))
 	wind := strconv.FormatFloat(data.Wind.Speed, 'f', 2, 64)
