@@ -1,6 +1,9 @@
 package bot
 
-import "fmt"
+import (
+	"github.com/bwmarrin/discordgo"
+	"log"
+)
 
 var (
 	OpenWeatherToken string
@@ -8,5 +11,15 @@ var (
 )
 
 func Run() {
-	fmt.Print("Chaves fcnionando: ", OpenWeatherToken, BotToken) // ...
+
+	discord, err := discordgo.New("Bot " + BotToken)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	discord.AddHandler(newMessage)
+
+	discord.Open()
+
+	defer discord.Close()
 }
