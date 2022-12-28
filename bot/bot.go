@@ -52,7 +52,8 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 
 	case strings.Contains(message.Content, "!cep"):
 		currentWeather, err := GetCurrentWeather(message.Content)
-		discord.ChanneçMessageSendComplex(message.ChannelID, currentWeather)
+		discord.ChannelMessageSendComplex(message.
+			ChannelID, currentWeather)
 	if err != nil {
 			discord.ChannelMessageSend(message.ChannelID, "Não foi possível encontrar a cidade")
 		}
