@@ -43,10 +43,17 @@ func newMessage(discord *discordgo.Session, message *discordgo.MessageCreate) {
 
 	switch {
 	case strings.Contains(message.Content, "clima"):
-		discord.ChannelMessageSend(message.ChannelID, "Eu posso te ajudar com isso!")
+		discord.ChannelMessageSend(message.ChannelID, "Eu posso te ajudar com isso! Use !cep <CEP> para saber o clima da sua cidade")
 	case strings.Contains(message.Content, "bot"):
-		discord.ChannelMessageSend(message.ChannelID, "Olá! Eu sou o WeatherDSBot, um bot que te ajuda a saber o clima de qualquer lugar do mundo!")
+		discord.ChannelMessageSend(message.ChannelID, "Olá! Eu sou o WeatherDSBot, um bot que te ajuda a saber o clima de qualquer lugar do mundo! só digite clima para saber mais")
 
+	case strings.Contains(message.Content, "!cep"):
+		currentWeather, err := GetCurrentWeather(message.Content)
+		discord.ChanneçMessageSendComplex(message.ChannelID, currentWeather)
+	if err != nil {
+			discord.ChannelMessageSend(message.ChannelID, "Não foi possível encontrar a cidade")
+		}
+	}
 	}
 
 }
